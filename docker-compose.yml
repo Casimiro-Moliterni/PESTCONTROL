@@ -1,0 +1,36 @@
+services:
+  web:
+    build: ./docker
+    ports:
+      - "8080:80"
+    volumes: [".:/var/www/html"]
+    environment:
+      DB_HOST: db
+      DB_NAME: pest_control
+      DB_USER: pest
+      DB_PASS: pest
+    depends_on: [db]
+
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: pest_control
+      MARIADB_USER: pest
+      MARIADB_PASSWORD: pest
+      MARIADB_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+    depends_on:
+      - db
+
+volumes:
+  dbdata:
