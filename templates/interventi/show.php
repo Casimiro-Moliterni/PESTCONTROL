@@ -41,3 +41,6 @@
     <div class="actions"><button class="btn" type="submit">Aggiorna scheda</button></div>
 </form>
 <?php endif; ?>
+<section class="card border-0 shadow-sm mt-4"><div class="card-body"><h2 class="h5">Rapporto e allegati</h2><p class="text-secondary">Esito, attività svolte e anomalie sono registrati nella scheda di esecuzione.</p>
+<?php if ($auth->can('interventi','modifica')): ?><form method="post" enctype="multipart/form-data" action="/app/interventi/<?= (int)$intervento['id'] ?>/allegati" class="d-flex flex-wrap gap-2 mb-3"><?= $csrf->field() ?><input class="form-control" style="max-width:420px" type="file" name="file" accept="image/jpeg,image/png,image/webp,application/pdf" required><button class="btn btn-outline-primary">Carica PDF o foto</button></form><?php endif ?>
+<?php if (!$allegati): ?><p class="mb-0 text-secondary">Nessun allegato.</p><?php else: ?><ul class="list-group list-group-flush"><?php foreach($allegati as $a): ?><li class="list-group-item d-flex justify-content-between"><a href="/app/allegati/<?= (int)$a['id'] ?>"><?= e($a['nome_originale']) ?></a><small class="text-secondary"><?= number_format((int)$a['dimensione']/1024,0) ?> KB · <?= e($a['creato_il']) ?></small></li><?php endforeach ?></ul><?php endif ?></div></section>

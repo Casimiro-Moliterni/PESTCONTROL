@@ -25,6 +25,17 @@ CROSS JOIN (SELECT 'lettura' AS azione UNION SELECT 'creazione' UNION SELECT 'mo
 INSERT INTO ruolo_permessi (ruolo_id, modulo, azione) VALUES
  (3, 'interventi', 'lettura'), (3, 'interventi', 'esecuzione');
 
+INSERT INTO ruolo_permessi (ruolo_id, modulo, azione)
+SELECT r.id, m.modulo, a.azione FROM ruoli r
+CROSS JOIN (SELECT 'sopralluoghi' modulo UNION SELECT 'preventivi' UNION SELECT 'calendario' UNION SELECT 'utenti' UNION SELECT 'azienda') m
+CROSS JOIN (SELECT 'lettura' azione UNION SELECT 'creazione' UNION SELECT 'modifica' UNION SELECT 'eliminazione') a WHERE r.id=1;
+INSERT INTO ruolo_permessi (ruolo_id, modulo, azione)
+SELECT r.id, m.modulo, a.azione FROM ruoli r
+CROSS JOIN (SELECT 'sopralluoghi' modulo UNION SELECT 'preventivi' UNION SELECT 'calendario') m
+CROSS JOIN (SELECT 'lettura' azione UNION SELECT 'creazione' UNION SELECT 'modifica') a WHERE r.id=2;
+INSERT INTO ruolo_permessi (ruolo_id, modulo, azione) VALUES
+ (1,'notifiche','lettura'),(1,'notifiche','modifica'),(2,'notifiche','lettura'),(2,'notifiche','modifica'),(3,'notifiche','lettura'),(3,'notifiche','modifica');
+
 INSERT INTO utenti (azienda_id, ruolo_id, nome, cognome, email, password_hash) VALUES
  (1, 1, 'Admin', 'Demo', 'admin@example.com', '$2y$10$iL.bo09OzjCVPF66/LSgwuVGXTyBDDfatcmPW1OdjWyxIscbZAuk.'),
  (1, 3, 'Mario', 'Operatore', 'operatore@example.com', '$2y$10$iL.bo09OzjCVPF66/LSgwuVGXTyBDDfatcmPW1OdjWyxIscbZAuk.');

@@ -36,4 +36,7 @@ return [
     'intervento_stato_operatore' => [
         'in_corso' => 'In corso', 'completato' => 'Completato', 'da_verificare' => 'Da verificare',
     ],
+    'sopralluogo_stato' => ['da_pianificare'=>'Da pianificare','pianificato'=>'Pianificato','in_corso'=>'In corso','completato'=>'Completato','annullato'=>'Annullato'],
+    'preventivo_stato' => ['bozza'=>'Bozza','da_inviare'=>'Da inviare','inviato'=>'Inviato','in_attesa'=>'In attesa','accettato'=>'Accettato','rifiutato'=>'Rifiutato','scaduto'=>'Scaduto','annullato'=>'Annullato','archiviato'=>'Archiviato'],
+    'calendario_tipo' => ['sopralluogo'=>'Sopralluogo','intervento'=>'Intervento','appuntamento'=>'Appuntamento','scadenza'=>'Scadenza','promemoria'=>'Promemoria'],
 ];

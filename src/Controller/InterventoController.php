@@ -41,6 +41,8 @@ final class InterventoController extends Controller
         }
         $id = $this->repo()->create($data);
         $this->repo()->setOperatori($id, $operatori);
+        $this->syncCalendar($id,$data,$operatori);
+        $this->notifyOperators($id,$operatori);
         $this->ctx->audit->record('creazione', 'intervento', $id);
         return $this->redirect("/app/interventi/$id", 'ok', 'Intervento creato.');
     }
@@ -50,9 +52,10 @@ final class InterventoController extends Controller
         $intervento = $this->repo()->detail($id) ?? $this->notFound();
         $this->assertVisible($id);
         $operatori = $this->repo()->operatori($id);
+        $allegati = $this->ctx->db->fetchAll('SELECT id,nome_originale,dimensione,creato_il FROM allegati WHERE azienda_id=:az AND entita="intervento" AND entita_id=:id ORDER BY id DESC',['az'=>$this->aziendaId(),'id'=>$id]);
         $puoEseguire = $this->ctx->auth->can('interventi', 'esecuzione')
             && ($this->ctx->auth->can('interventi', 'modifica') || $this->repo()->isAssigned($id, $this->ctx->auth->id()));
-        return $this->render('interventi/show', compact('intervento', 'operatori', 'puoEseguire'));
+        return $this->render('interventi/show', compact('intervento', 'operatori', 'puoEseguire','allegati'));
     }
 
     public function edit(int $id): Response
@@ -67,12 +70,15 @@ final class InterventoController extends Controller
     public function update(int $id): Response
     {
         $this->repo()->find($id) ?? $this->notFound();
+        $precedenti = array_map('intval', array_column($this->repo()->operatori($id), 'id'));
         [$data, $operatori, $errors] = $this->readInput();
         if ($errors) {
             return $this->form($data, $operatori, $id, $errors, 422);
         }
         $this->repo()->update($id, $data);
         $this->repo()->setOperatori($id, $operatori);
+        $this->syncCalendar($id,$data,$operatori);
+        $this->notifyOperators($id,array_values(array_diff($operatori,$precedenti)));
         $this->ctx->audit->record('modifica', 'intervento', $id);
         return $this->redirect("/app/interventi/$id", 'ok', 'Intervento aggiornato.');
     }
@@ -167,5 +173,19 @@ final class InterventoController extends Controller
     private function repo(): InterventoRepository
     {
         return new InterventoRepository($this->ctx->db, $this->aziendaId());
+    }
+
+    private function syncCalendar(int $id,array $data,array $operatori): void
+    {
+        $exists=$this->ctx->db->fetchValue('SELECT id FROM eventi_calendario WHERE azienda_id=:az AND intervento_id=:i AND archiviato_at IS NULL',['az'=>$this->aziendaId(),'i'=>$id]);
+        if(empty($data['pianificato_il'])) {if($exists)$this->ctx->db->update('eventi_calendario',['archiviato_at'=>date('Y-m-d H:i:s')],['id'=>(int)$exists,'azienda_id'=>$this->aziendaId()]);return;}
+        $values=['tipo'=>'intervento','titolo'=>'Intervento #'.$id,'descrizione'=>$data['descrizione']??null,'inizio'=>$data['pianificato_il'],'intervento_id'=>$id,'assegnato_a'=>$operatori[0]??null,'creato_da'=>$this->ctx->auth->id()];
+        if($exists)$this->ctx->db->update('eventi_calendario',['inizio'=>$values['inizio'],'titolo'=>$values['titolo'],'descrizione'=>$values['descrizione'],'assegnato_a'=>$values['assegnato_a']],['id'=>(int)$exists,'azienda_id'=>$this->aziendaId()]);
+        else $this->ctx->db->insert('eventi_calendario',['azienda_id'=>$this->aziendaId()]+$values);
+    }
+
+    private function notifyOperators(int $id,array $operatori): void
+    {
+        foreach($operatori as $uid)$this->ctx->db->insert('notifiche',['azienda_id'=>$this->aziendaId(),'utente_id'=>$uid,'titolo'=>'Intervento assegnato','messaggio'=>'Ti è stato assegnato l’intervento #'.$id.'.','link'=>'/app/interventi/'.$id]);
     }
 }

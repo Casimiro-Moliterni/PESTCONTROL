@@ -1,6 +1,6 @@
 # Pest Control Manager — Fase 1 (MVP)
 
-PHP 8.2+ (OOP, senza framework) · MariaDB · HTML/CSS, tutto server-side, nessun JavaScript.
+PHP 8.2+ (OOP, senza framework) · MariaDB · interfaccia server-side con Bootstrap 5.
 
 ## Avvio
     docker compose up --build
@@ -32,4 +32,10 @@ stati/tipologie fuori dal codice (`config/stati.php`), CSRF su ogni POST, area p
 2. `XRepository extends Repository` (tabella + colonne `fillable`).
 3. `XController extends Controller`.
 4. Rotte in `config/routes.php` con il permesso richiesto, template in `templates/x/`.
-5. Permessi del modulo in `ruolo_permessi`.
+5. Permessi del modulo in `ruolo_permessi` (configurabili dalla pagina Ruoli).
+
+## Moduli MVP inclusi
+Clienti e sedi, richieste pubbliche, sopralluoghi, preventivi, interventi con operatori,
+calendario, rapporti con allegati PDF/foto, notifiche essenziali, utenti, ruoli e dati aziendali.
+Il database è definito in `database/schema.sql`; i permessi iniziali si trovano in `database/seed.sql`.
+Per un database già esistente, applicare una volta `database/migrations/001_phase1.sql` (i volumi Docker esistenti non rieseguono gli script di bootstrap automaticamente).

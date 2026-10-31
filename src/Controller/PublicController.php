@@ -57,7 +57,10 @@ final class PublicController extends Controller
         }
 
         $repo = new RichiestaRepository($this->ctx->db, (int) $this->ctx->config['app']['public_azienda_id']);
-        $repo->create($data + ['origine' => 'sito', 'stato' => 'nuova']);
+        $id=$repo->create($data + ['origine' => 'sito', 'stato' => 'nuova']);
+        $aziendaId=(int)$this->ctx->config['app']['public_azienda_id'];
+        $destinatari=$this->ctx->db->fetchAll('SELECT DISTINCT u.id FROM utenti u JOIN ruolo_permessi rp ON rp.ruolo_id=u.ruolo_id WHERE u.azienda_id=:az AND u.attivo=1 AND rp.modulo="richieste" AND rp.azione="lettura"',['az'=>$aziendaId]);
+        foreach($destinatari as $utente)$this->ctx->db->insert('notifiche',['azienda_id'=>$aziendaId,'utente_id'=>(int)$utente['id'],'titolo'=>'Nuova richiesta dal sito','messaggio'=>'Richiesta ricevuta da '.$data['nome'].'.','link'=>'/app/richieste/'.$id]);
         $this->ctx->session->forget('_form_ts');
         return $this->render('pubblico/grazie', [], 'layout_pubblico');
     }
