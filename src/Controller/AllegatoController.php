@@ -7,6 +7,7 @@ final class AllegatoController extends Controller
  public function upload(int $id): Response
  {
   $intervento=(new InterventoRepository($this->ctx->db,$this->aziendaId()))->find($id)??$this->notFound();
+  if($this->ctx->auth->soloAssegnati()&&!(new InterventoRepository($this->ctx->db,$this->aziendaId()))->isAssigned($id,$this->ctx->auth->id()))$this->notFound();
   if(!isset($_FILES['file'])||$_FILES['file']['error']!==UPLOAD_ERR_OK||$_FILES['file']['size']>10*1024*1024)return $this->redirect('/app/interventi/'.$id,'error','File non valido o superiore a 10 MB.');
   $tmp=$_FILES['file']['tmp_name'];$mime=(new \finfo(FILEINFO_MIME_TYPE))->file($tmp)?:'application/octet-stream';
   $allowed=['image/jpeg','image/png','image/webp','application/pdf'];if(!in_array($mime,$allowed,true))return $this->redirect('/app/interventi/'.$id,'error','Sono ammessi PDF e immagini JPG, PNG o WebP.');

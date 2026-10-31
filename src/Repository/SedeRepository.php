@@ -20,7 +20,7 @@ final class SedeRepository extends Repository
     public function withCliente(): array
     {
         return $this->db->fetchAll(
-            'SELECT s.id, s.nome, c.denominazione AS cliente
+            'SELECT s.id, s.cliente_id, s.nome, c.denominazione AS cliente
              FROM sedi s JOIN clienti c ON c.id = s.cliente_id
              WHERE s.azienda_id = :az AND s.archiviato_at IS NULL AND c.archiviato_at IS NULL
              ORDER BY c.denominazione, s.nome',

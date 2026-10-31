@@ -15,7 +15,7 @@ final class Router
 
     public function add(string $method, string $pattern, array $handler, string|array|null $permission = 'auth'): void
     {
-        $regex = '#^' . preg_replace('#\{(\w+)\}#', '(?P<$1>\d+)', $pattern) . '$#';
+        $regex = '#^' . preg_replace_callback('#\{(\w+)\}#', static fn(array $m): string => in_array($m[1], ['token', 'code'], true) ? '(?P<' . $m[1] . '>[^/]+)' : '(?P<' . $m[1] . '>\d+)', $pattern) . '$#';
         $this->routes[] = compact('method', 'regex', 'handler', 'permission');
     }
 
@@ -37,7 +37,7 @@ final class Router
                 continue;
             }
             $this->guard($route, $ctx);
-            $params = array_map('intval', array_filter($m, 'is_string', ARRAY_FILTER_USE_KEY));
+            $params = array_map(static fn(string $value): int|string => ctype_digit($value) ? (int) $value : $value, array_filter($m, 'is_string', ARRAY_FILTER_USE_KEY));
             [$class, $action] = $route['handler'];
             return (new $class($ctx))->$action(...array_values($params));
         }

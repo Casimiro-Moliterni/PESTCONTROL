@@ -39,3 +39,16 @@ INSERT INTO ruolo_permessi (ruolo_id, modulo, azione) VALUES
 INSERT INTO utenti (azienda_id, ruolo_id, nome, cognome, email, password_hash) VALUES
  (1, 1, 'Admin', 'Demo', 'admin@example.com', '$2y$10$iL.bo09OzjCVPF66/LSgwuVGXTyBDDfatcmPW1OdjWyxIscbZAuk.'),
  (1, 3, 'Mario', 'Operatore', 'operatore@example.com', '$2y$10$iL.bo09OzjCVPF66/LSgwuVGXTyBDDfatcmPW1OdjWyxIscbZAuk.');
+
+INSERT INTO ruolo_permessi (ruolo_id,modulo,azione)
+SELECT r.id,m.modulo,a.azione FROM ruoli r CROSS JOIN
+(SELECT 'contratti' modulo UNION SELECT 'dispositivi' UNION SELECT 'magazzino' UNION SELECT 'mappa') m CROSS JOIN
+(SELECT 'lettura' azione UNION SELECT 'creazione' UNION SELECT 'modifica' UNION SELECT 'eliminazione' UNION SELECT 'esecuzione') a WHERE r.id=1;
+INSERT INTO ruolo_permessi (ruolo_id,modulo,azione)
+SELECT r.id,m.modulo,a.azione FROM ruoli r CROSS JOIN
+(SELECT 'contratti' modulo UNION SELECT 'dispositivi' UNION SELECT 'magazzino' UNION SELECT 'mappa') m CROSS JOIN
+(SELECT 'lettura' azione UNION SELECT 'creazione' UNION SELECT 'modifica') a WHERE r.id=2;
+INSERT INTO ruolo_permessi (ruolo_id,modulo,azione)
+SELECT r.id,m.modulo,a.azione FROM ruoli r CROSS JOIN
+(SELECT 'dispositivi' modulo UNION SELECT 'magazzino' UNION SELECT 'mappa') m CROSS JOIN
+(SELECT 'lettura' azione UNION SELECT 'esecuzione') a WHERE r.id=3;

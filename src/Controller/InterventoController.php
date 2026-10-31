@@ -9,6 +9,7 @@ use App\Core\Validator;
 use App\Repository\InterventoRepository;
 use App\Repository\SedeRepository;
 use App\Repository\UtenteRepository;
+use App\Repository\ProdottoRepository;
 
 final class InterventoController extends Controller
 {
@@ -53,9 +54,13 @@ final class InterventoController extends Controller
         $this->assertVisible($id);
         $operatori = $this->repo()->operatori($id);
         $allegati = $this->ctx->db->fetchAll('SELECT id,nome_originale,dimensione,creato_il FROM allegati WHERE azienda_id=:az AND entita="intervento" AND entita_id=:id ORDER BY id DESC',['az'=>$this->aziendaId(),'id'=>$id]);
+        $prodottoRepo = new ProdottoRepository($this->ctx->db,$this->aziendaId());
+        $materiali = $prodottoRepo->visitProducts($id);
+        $prodotti = array_values(array_filter($prodottoRepo->records(),static fn(array $p): bool => !in_array((int)$p['id'],array_map('intval',array_column($materiali,'prodotto_id')),true)));
+        $lotti=[]; foreach($prodotti as $p) foreach($prodottoRepo->lotti((int)$p['id']) as $lot) $lotti[]=$lot+['nome_prodotto'=>$p['nome']];
         $puoEseguire = $this->ctx->auth->can('interventi', 'esecuzione')
             && ($this->ctx->auth->can('interventi', 'modifica') || $this->repo()->isAssigned($id, $this->ctx->auth->id()));
-        return $this->render('interventi/show', compact('intervento', 'operatori', 'puoEseguire','allegati'));
+        return $this->render('interventi/show', compact('intervento', 'operatori', 'puoEseguire','allegati','materiali','prodotti','lotti'));
     }
 
     public function edit(int $id): Response
@@ -107,6 +112,9 @@ final class InterventoController extends Controller
             $update['fine_effettiva'] = date('Y-m-d H:i:s');
         }
         $this->repo()->update($id, $update);
+        if ($data['stato'] === 'completato' && !empty($intervento['visita_contratto_id'])) {
+            $this->ctx->db->update('visite_contratto', ['stato' => 'completata'], ['id' => (int) $intervento['visita_contratto_id'], 'azienda_id' => $this->aziendaId()]);
+        }
         $this->ctx->audit->record('esecuzione', 'intervento', $id, ['stato' => $data['stato']]);
         return $this->redirect("/app/interventi/$id", 'ok', 'Scheda aggiornata.');
     }

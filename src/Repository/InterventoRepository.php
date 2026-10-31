@@ -13,7 +13,7 @@ final class InterventoRepository extends Repository
     ];
 
     private const SELECT = 'SELECT i.*, c.denominazione AS cliente, s.nome AS sede_nome,
-            s.indirizzo AS sede_indirizzo, s.citta AS sede_citta,
+            s.indirizzo AS sede_indirizzo, s.citta AS sede_citta, s.latitudine AS sede_lat, s.longitudine AS sede_lng,
             s.referente_nome, s.referente_telefono, s.istruzioni_accesso, s.orari_consentiti
         FROM interventi i
         JOIN clienti c ON c.id = i.cliente_id

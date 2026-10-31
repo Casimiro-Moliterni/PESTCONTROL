@@ -39,4 +39,10 @@ return [
     'sopralluogo_stato' => ['da_pianificare'=>'Da pianificare','pianificato'=>'Pianificato','in_corso'=>'In corso','completato'=>'Completato','annullato'=>'Annullato'],
     'preventivo_stato' => ['bozza'=>'Bozza','da_inviare'=>'Da inviare','inviato'=>'Inviato','in_attesa'=>'In attesa','accettato'=>'Accettato','rifiutato'=>'Rifiutato','scaduto'=>'Scaduto','annullato'=>'Annullato','archiviato'=>'Archiviato'],
     'calendario_tipo' => ['sopralluogo'=>'Sopralluogo','intervento'=>'Intervento','appuntamento'=>'Appuntamento','scadenza'=>'Scadenza','promemoria'=>'Promemoria'],
+    'contratto_stato' => ['bozza'=>'Bozza','da_accettare'=>'Da accettare','attivo'=>'Attivo','sospeso'=>'Sospeso','scaduto'=>'Scaduto','cessato'=>'Cessato'],
+    'contratto_frequenza' => ['settimanale'=>'Ogni settimana','quindicinale'=>'Ogni due settimane','mensile'=>'Ogni mese','bimestrale'=>'Ogni due mesi','trimestrale'=>'Ogni tre mesi','semestrale'=>'Ogni sei mesi','annuale'=>'Ogni anno'],
+    'visita_stato' => ['da_pianificare'=>'Da pianificare','pianificata'=>'Pianificata','completata'=>'Completata','annullata'=>'Annullata'],
+    'dispositivo_stato' => ['attivo'=>'Attivo','da_controllare'=>'Da controllare','fuori_servizio'=>'Fuori servizio','rimosso'=>'Rimosso'],
+    'dispositivo_esito' => ['regolare'=>'Regolare','attivita_rilevata'=>'Attività infestante rilevata','esca_consumata'=>'Esca consumata','anomalia'=>'Anomalia','non_accessibile'=>'Non accessibile'],
+    'magazzino_movimento' => ['carico'=>'Carico','scarico'=>'Scarico','rettifica'=>'Rettifica'],
 ];

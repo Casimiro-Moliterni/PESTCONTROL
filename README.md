@@ -1,4 +1,4 @@
-# Pest Control Manager — Fase 1 (MVP)
+# Pest Control Manager — Fase 1 e Fase 2
 
 PHP 8.2+ (OOP, senza framework) · MariaDB · interfaccia client-side con Bootstrap 5 e JS.
 
@@ -34,8 +34,8 @@ stati/tipologie fuori dal codice (`config/stati.php`), CSRF su ogni POST, area p
 4. Rotte in `config/routes.php` con il permesso richiesto, template in `templates/x/`.
 5. Permessi del modulo in `ruolo_permessi` (configurabili dalla pagina Ruoli).
 
-## Moduli MVP inclusi
+## Moduli inclusi
 Clienti e sedi, richieste pubbliche, sopralluoghi, preventivi, interventi con operatori,
-calendario, rapporti con allegati PDF/foto, notifiche essenziali, utenti, ruoli e dati aziendali.
+calendario, contratti e visite ricorrenti, dispositivi con QR e controlli sul campo, mappa delle sedi e dei dispositivi, area mobile operatori, magazzino con lotti e consumi, rapporti tecnici stampabili e allegati, notifiche essenziali, utenti, ruoli e dati aziendali.
 Il database è definito in `database/schema.sql`; i permessi iniziali si trovano in `database/seed.sql`.
-Per un database già esistente, applicare una volta `database/migrations/001_phase1.sql` (i volumi Docker esistenti non rieseguono gli script di bootstrap automaticamente).
+Per un database esistente della fase 1, applicare una volta `database/migrations/002_phase2.sql` dopo `001_phase1.sql` (i volumi Docker esistenti non rieseguono gli script di bootstrap automaticamente).
