@@ -1,27 +1,3 @@
-<div class="page-head">
-    <h1>Clienti</h1>
-    <?php if ($auth->can('clienti', 'creazione')): ?><a class="btn" href="/app/clienti/nuovo">Nuovo cliente</a><?php endif; ?>
-</div>
-<form method="get" class="filters">
-    <input type="search" name="q" placeholder="Cerca nome, email, telefono, P.IVA" value="<?= e($q) ?>">
-    <select name="stato"><?= options($stati['cliente_stato'], $stato, true) ?></select>
-    <button class="btn btn-small" type="submit">Filtra</button>
-</form>
-<?php if (!$clienti): ?>
-    <p class="muted">Nessun cliente trovato.</p>
-<?php else: ?>
-<div class="table-wrap"><table>
-    <thead><tr><th>Denominazione</th><th>Tipo</th><th>Contatti</th><th>Stato</th></tr></thead>
-    <tbody>
-    <?php foreach ($clienti as $c): ?>
-        <tr>
-            <td><a href="/app/clienti/<?= (int) $c['id'] ?>"><?= e($c['denominazione']) ?></a>
-                <?php if ($c['etichetta']): ?><span class="badge badge-alt"><?= e($c['etichetta']) ?></span><?php endif; ?></td>
-            <td><?= lbl($stati['cliente_tipo'], $c['tipo']) ?></td>
-            <td><?= e($c['email']) ?><br><small><?= e($c['telefono']) ?></small></td>
-            <td><span class="badge"><?= lbl($stati['cliente_stato'], $c['stato']) ?></span></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table></div>
-<?php endif; ?>
+<div class="page-head"><div><h1 class="h2">Clienti e sedi</h1><p class="text-secondary mb-0">Anagrafiche, contatti e luoghi degli interventi.</p></div><?php if($auth->can('clienti','creazione')): ?><a class="btn btn-primary" href="/app/clienti/nuovo">＋ Aggiungi cliente</a><?php endif ?></div>
+<form method="get" class="filters" role="search"><label class="visually-hidden" for="clientSearch">Cerca tra i clienti</label><input id="clientSearch" class="form-control" type="search" name="q" placeholder="Nome, email, telefono o partita IVA" value="<?= e($q) ?>" data-live-filter="#customerRows"><label class="visually-hidden" for="clientStatus">Filtra per stato</label><select id="clientStatus" class="form-select" name="stato"><?= options($stati['cliente_stato'],$stato,true) ?></select><button class="btn btn-primary" type="submit">Applica filtri</button><?php if($q||$stato): ?><a class="btn btn-outline-secondary" href="/app/clienti">Azzera</a><?php endif ?></form>
+<?php if(!$clienti): ?><div class="card border-0 shadow-sm"><div class="empty-state"><strong>Nessun cliente trovato</strong><p class="mb-0 mt-1">Prova a cambiare i filtri o aggiungi una nuova anagrafica.</p></div></div><?php else: ?><div class="table-wrap"><table id="customerTable" class="table table-hover align-middle"><thead><tr><th>Cliente</th><th>Tipo</th><th>Contatti</th><th>Stato</th><th></th></tr></thead><tbody id="customerRows"><?php foreach($clienti as $c): ?><tr><td><a class="fw-semibold text-decoration-none" href="/app/clienti/<?= (int)$c['id'] ?>"><?= e($c['denominazione']) ?></a><?php if($c['etichetta']): ?><span class="badge rounded-pill text-bg-light ms-1"><?= e($c['etichetta']) ?></span><?php endif ?></td><td><?= e(lbl($stati['cliente_tipo'],$c['tipo'])) ?></td><td><?= e($c['email']?:'—') ?><br><small><?= e($c['telefono']?:'') ?></small></td><td><span class="badge rounded-pill text-bg-light"><?= e(lbl($stati['cliente_stato'],$c['stato'])) ?></span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="/app/clienti/<?= (int)$c['id'] ?>">Apri scheda</a></td></tr><?php endforeach ?></tbody></table></div><?php endif ?>

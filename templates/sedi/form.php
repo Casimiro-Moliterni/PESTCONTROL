@@ -1,34 +1,7 @@
-<h1><?= $id ? 'Modifica sede' : 'Nuova sede' ?> — <?= e($cliente['denominazione']) ?></h1>
-<form method="post" action="<?= $id ? '/app/sedi/' . (int) $id : '/app/clienti/' . (int) $cliente['id'] . '/sedi' ?>" class="form">
-    <?= $csrf->field() ?>
-    <label>Nome sede *
-        <input name="nome" value="<?= v($sede, 'nome') ?>" required>
-        <?= field_error($errors, 'nome') ?>
-    </label>
-    <label>Indirizzo <input name="indirizzo" value="<?= v($sede, 'indirizzo') ?>"><?= field_error($errors, 'indirizzo') ?></label>
-    <div class="grid">
-        <label>Città <input name="citta" value="<?= v($sede, 'citta') ?>"></label>
-        <label>CAP <input name="cap" value="<?= v($sede, 'cap') ?>"></label>
-        <label>Provincia <input name="provincia" maxlength="5" value="<?= v($sede, 'provincia') ?>"></label>
-    </div>
-    <div class="grid">
-        <label>Latitudine <input name="latitudine" value="<?= v($sede, 'latitudine') ?>"><?= field_error($errors, 'latitudine') ?></label>
-        <label>Longitudine <input name="longitudine" value="<?= v($sede, 'longitudine') ?>"><?= field_error($errors, 'longitudine') ?></label>
-    </div>
-    <div class="grid">
-        <label>Referente in sede <input name="referente_nome" value="<?= v($sede, 'referente_nome') ?>"></label>
-        <label>Telefono referente <input name="referente_telefono" value="<?= v($sede, 'referente_telefono') ?>"></label>
-    </div>
-    <label>Orari consentiti <input name="orari_consentiti" value="<?= v($sede, 'orari_consentiti') ?>"></label>
-    <label>Istruzioni di accesso <textarea name="istruzioni_accesso" rows="3"><?= v($sede, 'istruzioni_accesso') ?></textarea></label>
-    <label>Note per gli operatori <textarea name="note" rows="3"><?= v($sede, 'note') ?></textarea></label>
-    <div class="actions">
-        <button class="btn" type="submit">Salva</button>
-        <a class="btn btn-secondary" href="/app/clienti/<?= (int) $cliente['id'] ?>">Annulla</a>
-    </div>
-</form>
-<?php if ($id && $auth->can('clienti', 'eliminazione')): ?>
-<form method="post" action="/app/sedi/<?= (int) $id ?>/archivia" class="form">
-    <?= $csrf->field() ?><button class="btn btn-danger btn-small" type="submit">Archivia sede</button>
-</form>
-<?php endif; ?>
+<div class="mb-4"><a href="/app/clienti/<?= (int)$cliente['id'] ?>" class="text-decoration-none">← Torna alla scheda cliente</a><h1 class="h2 mt-2"><?= $id?'Modifica sede':'Aggiungi sede' ?></h1><p class="text-secondary mb-0">Cliente: <strong><?= e($cliente['denominazione']) ?></strong>. Le sedi permettono di distinguere i luoghi degli interventi.</p></div>
+<form method="post" action="<?= $id?'/app/sedi/'.(int)$id:'/app/clienti/'.(int)$cliente['id'].'/sedi' ?>" class="form"><?= $csrf->field() ?>
+<section class="mb-4"><h2 class="h5">Indirizzo della sede</h2><div class="row g-3"><div class="col-md-8"><label class="form-label">Nome sede <span class="required-mark">*</span><input class="form-control" name="nome" value="<?= v($sede,'nome') ?>" required placeholder="Es. Stabilimento di Milano"></label><?= field_error($errors,'nome') ?></div><div class="col-12"><label class="form-label">Indirizzo<input class="form-control" name="indirizzo" value="<?= v($sede,'indirizzo') ?>"></label><?= field_error($errors,'indirizzo') ?></div><div class="col-md-6"><label class="form-label">Città<input class="form-control" name="citta" value="<?= v($sede,'citta') ?>"></label></div><div class="col-md-3"><label class="form-label">CAP<input class="form-control" name="cap" value="<?= v($sede,'cap') ?>" inputmode="numeric"></label></div><div class="col-md-3"><label class="form-label">Provincia<input class="form-control" name="provincia" maxlength="5" value="<?= v($sede,'provincia') ?>"></label></div></div></section>
+<section class="mb-4"><h2 class="h5">Referente sul posto</h2><div class="row g-3"><div class="col-md-6"><label class="form-label">Nome del referente<input class="form-control" name="referente_nome" value="<?= v($sede,'referente_nome') ?>"></label></div><div class="col-md-6"><label class="form-label">Telefono del referente<input class="form-control" type="tel" name="referente_telefono" value="<?= v($sede,'referente_telefono') ?>"></label></div></div></section>
+<section class="mb-4"><h2 class="h5">Informazioni per l’intervento</h2><div class="row g-3"><div class="col-12"><label class="form-label">Orari consentiti<input class="form-control" name="orari_consentiti" value="<?= v($sede,'orari_consentiti') ?>" placeholder="Es. lun–ven, 8:00–17:00"></label></div><div class="col-md-6"><label class="form-label">Istruzioni per accedere<textarea class="form-control" name="istruzioni_accesso" rows="3" placeholder="Citofono, ingresso, DPI richiesti…"><?= v($sede,'istruzioni_accesso') ?></textarea></label></div><div class="col-md-6"><label class="form-label">Note per gli operatori<textarea class="form-control" name="note" rows="3"><?= v($sede,'note') ?></textarea></label></div></div><details class="mt-3"><summary class="text-secondary">Coordinate geografiche (facoltative)</summary><div class="row g-3 mt-1"><div class="col-md-6"><label class="form-label">Latitudine<input class="form-control" name="latitudine" value="<?= v($sede,'latitudine') ?>" placeholder="Es. 45.4642"></label><?= field_error($errors,'latitudine') ?></div><div class="col-md-6"><label class="form-label">Longitudine<input class="form-control" name="longitudine" value="<?= v($sede,'longitudine') ?>" placeholder="Es. 9.1900"></label><?= field_error($errors,'longitudine') ?></div></div></details></section>
+<div class="actions"><button class="btn btn-primary btn-lg">Salva sede</button><a class="btn btn-outline-secondary" href="/app/clienti/<?= (int)$cliente['id'] ?>">Annulla</a></div></form>
+<?php if($id&&$auth->can('clienti','eliminazione')): ?><form method="post" action="/app/sedi/<?= (int)$id ?>/archivia" class="mt-3"><?= $csrf->field() ?><button class="btn btn-outline-danger" type="submit" data-confirm="Archiviare questa sede?">Archivia sede</button></form><?php endif ?>

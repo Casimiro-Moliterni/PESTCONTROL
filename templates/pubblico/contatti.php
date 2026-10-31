@@ -1,27 +1,6 @@
-<h1>Contattaci</h1>
-<form method="post" action="/contatti" class="form">
-    <?= $csrf->field() ?>
-    <label class="hp" aria-hidden="true">Non compilare <input type="text" name="sito_web" tabindex="-1" autocomplete="off"></label>
-    <label>Tipo di richiesta *
-        <select name="tipo"><?= options($stati['richiesta_tipo'], $data['tipo'] ?? 'preventivo') ?></select>
-        <?= field_error($errors, 'tipo') ?>
-    </label>
-    <div class="grid">
-        <label>Nome e cognome * <input name="nome" value="<?= v($data, 'nome') ?>" required><?= field_error($errors, 'nome') ?></label>
-        <label>Azienda <input name="azienda_richiedente" value="<?= v($data, 'azienda_richiedente') ?>"></label>
-    </div>
-    <div class="grid">
-        <label>Email * <input type="email" name="email" value="<?= v($data, 'email') ?>" required><?= field_error($errors, 'email') ?></label>
-        <label>Telefono <input name="telefono" value="<?= v($data, 'telefono') ?>"></label>
-    </div>
-    <label>Indirizzo o località dell'intervento <input name="localita" value="<?= v($data, 'localita') ?>"></label>
-    <label>Descrizione del problema * <textarea name="descrizione" rows="5" required><?= v($data, 'descrizione') ?></textarea><?= field_error($errors, 'descrizione') ?></label>
-    <label>Preferisci essere ricontattato via
-        <select name="preferenza_contatto"><?= options(['email' => 'Email', 'telefono' => 'Telefono'], $data['preferenza_contatto'] ?? null, true) ?></select>
-    </label>
-    <label class="check">
-        <input type="checkbox" name="privacy" value="1"> Ho letto l'informativa privacy e acconsento al trattamento dei dati per rispondere alla richiesta. *
-    </label>
-    <?= field_error($errors, 'privacy') ?>
-    <div class="actions"><button class="btn" type="submit">Invia richiesta</button></div>
-</form>
+<div class="mb-4"><p class="text-uppercase small fw-semibold text-success mb-1">Richiesta informazioni</p><h1 class="h2">Come possiamo aiutarti?</h1><p class="text-secondary mb-0">Compila il modulo. I campi con <span class="required-mark">*</span> sono obbligatori; il personale ti ricontatterà.</p></div>
+<form method="post" action="/contatti" class="card border-0 shadow-sm" data-character-count><?= $csrf->field() ?><div class="card-body p-4">
+<label class="hp" aria-hidden="true">Non compilare <input type="text" name="sito_web" tabindex="-1" autocomplete="off"></label>
+<div class="mb-3"><label class="form-label" for="requestType">Di cosa hai bisogno? <span class="required-mark">*</span></label><select class="form-select" id="requestType" name="tipo" required><?= options($stati['richiesta_tipo'],$data['tipo']??'preventivo') ?></select><?= field_error($errors,'tipo') ?></div>
+<div class="row g-3"><div class="col-md-6"><label class="form-label" for="requestName">Nome e cognome <span class="required-mark">*</span></label><input class="form-control" id="requestName" name="nome" value="<?= v($data,'nome') ?>" autocomplete="name" required><?= field_error($errors,'nome') ?></div><div class="col-md-6"><label class="form-label" for="requestCompany">Azienda (se presente)</label><input class="form-control" id="requestCompany" name="azienda_richiedente" value="<?= v($data,'azienda_richiedente') ?>" autocomplete="organization"></div><div class="col-md-6"><label class="form-label" for="requestEmail">Email <span class="required-mark">*</span></label><input class="form-control" id="requestEmail" type="email" name="email" value="<?= v($data,'email') ?>" autocomplete="email" required><?= field_error($errors,'email') ?></div><div class="col-md-6"><label class="form-label" for="requestPhone">Telefono</label><input class="form-control" id="requestPhone" type="tel" name="telefono" value="<?= v($data,'telefono') ?>" autocomplete="tel"></div><div class="col-12"><label class="form-label" for="requestPlace">Indirizzo o località</label><input class="form-control" id="requestPlace" name="localita" value="<?= v($data,'localita') ?>" placeholder="Comune o indirizzo dell’intervento"></div><div class="col-12"><label class="form-label" for="requestDescription">Descrivi il problema <span class="required-mark">*</span></label><textarea class="form-control" id="requestDescription" name="descrizione" rows="5" maxlength="5000" required placeholder="Dove hai notato il problema? Da quanto tempo? Ci sono aree da trattare prioritarie?"><?= v($data,'descrizione') ?></textarea><div class="d-flex justify-content-between help-text"><span><?= field_error($errors,'descrizione') ?></span><span data-char-count>0 / 5000</span></div></div><div class="col-md-6"><label class="form-label" for="requestPreference">Come preferisci essere ricontattato?</label><select class="form-select" id="requestPreference" name="preferenza_contatto"><?= options(['email'=>'Email','telefono'=>'Telefono'],$data['preferenza_contatto']??null,true) ?></select></div></div>
+<div class="form-check mt-4"><input class="form-check-input" type="checkbox" id="privacyConsent" name="privacy" value="1" required><label class="form-check-label" for="privacyConsent">Ho letto l’informativa privacy e acconsento al trattamento dei dati per ricevere risposta alla richiesta. <span class="required-mark">*</span></label><?= field_error($errors,'privacy') ?></div><button class="btn btn-primary btn-lg mt-4">Invia richiesta</button><p class="help-text mt-3 mb-0">I dati inseriti saranno utilizzati per gestire questa richiesta.</p></div></form>

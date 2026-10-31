@@ -1,10 +1,12 @@
 <div class="page-head">
-    <h1><?= e($cliente['denominazione']) ?></h1>
+    <div><a href="/app/clienti" class="text-decoration-none">← Torna ai clienti</a><h1 class="h2 mt-2"><?= e($cliente['denominazione']) ?></h1></div>
     <div class="actions">
-        <?php if ($auth->can('clienti', 'modifica')): ?><a class="btn btn-small" href="/app/clienti/<?= (int) $cliente['id'] ?>/modifica">Modifica</a><?php endif; ?>
+        <?php if ($auth->can('sopralluoghi', 'creazione')): ?><a class="btn btn-outline-primary" href="/app/sopralluoghi/nuovo?cliente_id=<?= (int)$cliente['id'] ?>">＋ Sopralluogo</a><?php endif; ?>
+        <?php if ($auth->can('preventivi', 'creazione')): ?><a class="btn btn-outline-primary" href="/app/preventivi/nuovo?cliente_id=<?= (int)$cliente['id'] ?>">＋ Preventivo</a><?php endif; ?>
+        <?php if ($auth->can('clienti', 'modifica')): ?><a class="btn btn-outline-secondary" href="/app/clienti/<?= (int) $cliente['id'] ?>/modifica">Modifica cliente</a><?php endif; ?>
         <?php if ($auth->can('clienti', 'eliminazione')): ?>
         <form method="post" action="/app/clienti/<?= (int) $cliente['id'] ?>/archivia" class="inline">
-            <?= $csrf->field() ?><button class="btn btn-small btn-danger" type="submit">Archivia</button>
+            <?= $csrf->field() ?><button class="btn btn-danger" type="submit" data-confirm="Archiviare questo cliente? I dati non saranno eliminati definitivamente, ma non comparirà più negli elenchi attivi.">Archivia cliente</button>
         </form>
         <?php endif; ?>
     </div>

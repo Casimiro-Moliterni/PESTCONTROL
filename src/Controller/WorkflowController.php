@@ -17,7 +17,7 @@ abstract class WorkflowController extends Controller
     abstract protected function repo(): object;
     public function index(): Response { return $this->render('workflows/index',['records'=>$this->repo()->records(),'module'=>$this->module]); }
     public function create(): Response { return $this->form($this->defaults,null); }
-    public function show(int $id): Response { $record=$this->repo()->find($id)??$this->notFound(); $module=$this->module; return $this->render('workflows/show',compact('record','module')); }
+    public function show(int $id): Response { $record=$this->repo()->find($id)??$this->notFound(); if(!empty($record['cliente_id']))$record['cliente_nome']=(new ClienteRepository($this->ctx->db,$this->aziendaId()))->find((int)$record['cliente_id'])['denominazione']??'—'; if(!empty($record['sede_id']))$record['sede_nome']=(new SedeRepository($this->ctx->db,$this->aziendaId()))->find((int)$record['sede_id'])['nome']??'—'; $module=$this->module; return $this->render('workflows/show',compact('record','module')); }
     public function edit(int $id): Response { $record=$this->repo()->find($id)??$this->notFound(); foreach($record as $key=>$value) if(is_string($value)&&preg_match('/^(pianificato_il|inizio|fine)$/',$key)&&$value!=='') $record[$key]=date('Y-m-d\\TH:i',strtotime($value)); return $this->form($record,$id); }
     public function store(): Response { return $this->save(null); }
     public function update(int $id): Response { $this->repo()->find($id)??$this->notFound(); return $this->save($id); }

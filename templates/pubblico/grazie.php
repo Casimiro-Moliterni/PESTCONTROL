@@ -1,3 +1,1 @@
-<h1>Grazie!</h1>
-<p>Abbiamo ricevuto la tua richiesta e ti ricontatteremo al più presto.</p>
-<p><a class="btn" href="/">Torna alla home</a></p>
+<div class="card border-0 shadow-sm mx-auto text-center" style="max-width:640px"><div class="card-body p-5"><div class="display-4 text-success mb-3" aria-hidden="true">✓</div><h1 class="h2">Richiesta inviata</h1><p class="text-secondary">Abbiamo ricevuto le tue informazioni. Ti ricontatteremo al più presto usando i recapiti che hai indicato.</p><a class="btn btn-primary mt-2" href="/">Torna alla home</a></div></div>

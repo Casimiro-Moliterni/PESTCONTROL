@@ -1,25 +1,3 @@
-<div class="page-head">
-    <h1>Interventi</h1>
-    <?php if ($auth->can('interventi', 'creazione')): ?><a class="btn" href="/app/interventi/nuovo">Nuovo intervento</a><?php endif; ?>
-</div>
-<form method="get" class="filters">
-    <select name="stato"><?= options($stati['intervento_stato'], $stato, true) ?></select>
-    <button class="btn btn-small" type="submit">Filtra</button>
-</form>
-<?php if (!$interventi): ?>
-    <p class="muted">Nessun intervento.</p>
-<?php else: ?>
-<div class="table-wrap"><table>
-    <thead><tr><th>Quando</th><th>Cliente / sede</th><th>Servizio</th><th>Stato</th></tr></thead>
-    <tbody>
-    <?php foreach ($interventi as $i): ?>
-        <tr>
-            <td><a href="/app/interventi/<?= (int) $i['id'] ?>"><?= fmt_data($i['pianificato_il']) ?></a></td>
-            <td><?= e($i['cliente']) ?><br><small><?= e($i['sede_nome']) ?> — <?= e($i['sede_citta']) ?></small></td>
-            <td><?= lbl($stati['servizio_tipo'], $i['tipo_servizio']) ?><br><small><?= e($i['infestante']) ?></small></td>
-            <td><span class="badge"><?= lbl($stati['intervento_stato'], $i['stato']) ?></span></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table></div>
-<?php endif; ?>
+<div class="page-head"><div><h1 class="h2">Interventi</h1><p class="text-secondary mb-0">Pianifica il lavoro, assegna gli operatori e consulta i rapporti.</p></div><?php if($auth->can('interventi','creazione')): ?><a class="btn btn-primary" href="/app/interventi/nuovo">＋ Nuovo intervento</a><?php endif ?></div>
+<form method="get" class="filters"><label class="visually-hidden" for="interventionSearch">Cerca negli interventi</label><input id="interventionSearch" class="form-control" type="search" placeholder="Cerca cliente, sede o servizio" data-live-filter="#interventionRows"><label class="visually-hidden" for="interventionStatus">Stato intervento</label><select class="form-select" id="interventionStatus" name="stato"><?= options($stati['intervento_stato'],$stato,true) ?></select><button class="btn btn-primary">Applica filtri</button><?php if($stato): ?><a class="btn btn-outline-secondary" href="/app/interventi">Azzera</a><?php endif ?></form>
+<?php if(!$interventi): ?><div class="card border-0 shadow-sm"><div class="empty-state"><strong>Nessun intervento</strong><p class="mb-0 mt-1">Quando ne crei uno, lo troverai qui.</p></div></div><?php else: ?><div class="table-wrap"><table class="table table-hover align-middle"><thead><tr><th>Data e ora</th><th>Cliente / sede</th><th>Servizio</th><th>Stato</th><th></th></tr></thead><tbody id="interventionRows"><?php foreach($interventi as $i): ?><tr><td class="text-nowrap"><?= e(fmt_data($i['pianificato_il'])) ?></td><td><strong><?= e($i['cliente']) ?></strong><br><small><?= e($i['sede_nome']) ?><?= $i['sede_citta']?' · '.e($i['sede_citta']):'' ?></small></td><td><?= e(lbl($stati['servizio_tipo'],$i['tipo_servizio'])) ?><?= $i['infestante']?'<br><small>'.e($i['infestante']).'</small>':'' ?></td><td><span class="badge rounded-pill text-bg-light"><?= e(lbl($stati['intervento_stato'],$i['stato'])) ?></span></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="/app/interventi/<?= (int)$i['id'] ?>">Apri scheda</a></td></tr><?php endforeach ?></tbody></table></div><?php endif ?>

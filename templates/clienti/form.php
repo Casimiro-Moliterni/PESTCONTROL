@@ -1,42 +1,7 @@
-<h1><?= $id ? 'Modifica cliente' : 'Nuovo cliente' ?></h1>
-<form method="post" action="<?= $id ? '/app/clienti/' . (int) $id : '/app/clienti' ?>" class="form">
-    <?= $csrf->field() ?>
-    <label>Nome e cognome / ragione sociale *
-        <input name="denominazione" value="<?= v($cliente, 'denominazione') ?>" required>
-        <?= field_error($errors, 'denominazione') ?>
-    </label>
-    <div class="grid">
-        <label>Tipologia *
-            <select name="tipo"><?= options($stati['cliente_tipo'], $cliente['tipo'] ?? null) ?></select>
-            <?= field_error($errors, 'tipo') ?>
-        </label>
-        <label>Stato *
-            <select name="stato"><?= options($stati['cliente_stato'], $cliente['stato'] ?? null) ?></select>
-            <?= field_error($errors, 'stato') ?>
-        </label>
-        <label>Etichetta commerciale (es. VIP)
-            <input name="etichetta" value="<?= v($cliente, 'etichetta') ?>">
-            <?= field_error($errors, 'etichetta') ?>
-        </label>
-    </div>
-    <div class="grid">
-        <label>Codice fiscale <input name="codice_fiscale" value="<?= v($cliente, 'codice_fiscale') ?>"><?= field_error($errors, 'codice_fiscale') ?></label>
-        <label>Partita IVA <input name="partita_iva" value="<?= v($cliente, 'partita_iva') ?>"><?= field_error($errors, 'partita_iva') ?></label>
-    </div>
-    <div class="grid">
-        <label>Email <input type="email" name="email" value="<?= v($cliente, 'email') ?>"><?= field_error($errors, 'email') ?></label>
-        <label>Telefono <input name="telefono" value="<?= v($cliente, 'telefono') ?>"><?= field_error($errors, 'telefono') ?></label>
-        <label>PEC <input type="email" name="pec" value="<?= v($cliente, 'pec') ?>"><?= field_error($errors, 'pec') ?></label>
-    </div>
-    <label>Indirizzo (fatturazione) <input name="indirizzo" value="<?= v($cliente, 'indirizzo') ?>"><?= field_error($errors, 'indirizzo') ?></label>
-    <div class="grid">
-        <label>Città <input name="citta" value="<?= v($cliente, 'citta') ?>"></label>
-        <label>CAP <input name="cap" value="<?= v($cliente, 'cap') ?>"></label>
-        <label>Provincia <input name="provincia" maxlength="5" value="<?= v($cliente, 'provincia') ?>"></label>
-    </div>
-    <label>Note <textarea name="note" rows="4"><?= v($cliente, 'note') ?></textarea></label>
-    <div class="actions">
-        <button class="btn" type="submit">Salva</button>
-        <a class="btn btn-secondary" href="<?= $id ? '/app/clienti/' . (int) $id : '/app/clienti' ?>">Annulla</a>
-    </div>
-</form>
+<div class="mb-4"><a href="<?= $id?'/app/clienti/'.(int)$id:'/app/clienti' ?>" class="text-decoration-none">← Torna ai clienti</a><h1 class="h2 mt-2"><?= $id?'Modifica cliente':'Aggiungi cliente' ?></h1><p class="text-secondary mb-0">Inserisci i dati di base. Le informazioni fiscali non necessarie possono restare vuote.</p></div>
+<form method="post" action="<?= $id?'/app/clienti/'.(int)$id:'/app/clienti' ?>" class="form"><?= $csrf->field() ?>
+<section class="mb-4"><h2 class="h5">Anagrafica</h2><div class="row g-3"><div class="col-md-8"><label class="form-label">Nome e cognome o ragione sociale <span class="required-mark">*</span><input class="form-control" name="denominazione" value="<?= v($cliente,'denominazione') ?>" required autofocus></label><?= field_error($errors,'denominazione') ?></div><div class="col-md-4"><label class="form-label">Tipologia<select class="form-select" name="tipo"><?= options($stati['cliente_tipo'],$cliente['tipo']??null) ?></select></label></div><div class="col-md-4"><label class="form-label">Stato del cliente<select class="form-select" name="stato"><?= options($stati['cliente_stato'],$cliente['stato']??null) ?></select><span class="help-text">Per esempio: prospect, attivo o sospeso.</span></label></div><div class="col-md-4"><label class="form-label">Etichetta commerciale<input class="form-control" name="etichetta" value="<?= v($cliente,'etichetta') ?>" placeholder="Facoltativa, es. VIP"></label></div></div></section>
+<section class="mb-4"><h2 class="h5">Contatti</h2><div class="row g-3"><div class="col-md-4"><label class="form-label">Email<input class="form-control" type="email" name="email" value="<?= v($cliente,'email') ?>" autocomplete="email"></label><?= field_error($errors,'email') ?></div><div class="col-md-4"><label class="form-label">Telefono<input class="form-control" type="tel" name="telefono" value="<?= v($cliente,'telefono') ?>" autocomplete="tel"></label></div><div class="col-md-4"><label class="form-label">PEC<input class="form-control" type="email" name="pec" value="<?= v($cliente,'pec') ?>"></label><?= field_error($errors,'pec') ?></div></div></section>
+<section class="mb-4"><h2 class="h5">Dati fiscali e fatturazione</h2><div class="row g-3"><div class="col-md-6"><label class="form-label">Codice fiscale<input class="form-control" name="codice_fiscale" value="<?= v($cliente,'codice_fiscale') ?>"></label></div><div class="col-md-6"><label class="form-label">Partita IVA<input class="form-control" name="partita_iva" value="<?= v($cliente,'partita_iva') ?>"></label></div><div class="col-12"><label class="form-label">Indirizzo di fatturazione<input class="form-control" name="indirizzo" value="<?= v($cliente,'indirizzo') ?>"></label></div><div class="col-md-6"><label class="form-label">Città<input class="form-control" name="citta" value="<?= v($cliente,'citta') ?>"></label></div><div class="col-md-3"><label class="form-label">CAP<input class="form-control" name="cap" value="<?= v($cliente,'cap') ?>" inputmode="numeric"></label></div><div class="col-md-3"><label class="form-label">Provincia<input class="form-control" name="provincia" maxlength="5" value="<?= v($cliente,'provincia') ?>"></label></div></div></section>
+<section class="mb-4"><label class="form-label">Note interne<textarea class="form-control" name="note" rows="3" placeholder="Informazioni utili per il personale."><?= v($cliente,'note') ?></textarea></label></section>
+<div class="actions"><button class="btn btn-primary btn-lg">Salva cliente</button><a class="btn btn-outline-secondary" href="<?= $id?'/app/clienti/'.(int)$id:'/app/clienti' ?>">Annulla</a></div></form>

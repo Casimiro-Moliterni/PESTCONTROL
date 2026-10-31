@@ -1,41 +1,4 @@
-<h1>Richiesta #<?= (int) $richiesta['id'] ?></h1>
-<p>
-    <span class="badge"><?= lbl($stati['richiesta_stato'], $richiesta['stato']) ?></span>
-    <span class="badge badge-alt"><?= lbl($stati['richiesta_tipo'], $richiesta['tipo']) ?></span>
-</p>
-<dl class="details">
-    <dt>Ricevuta il</dt><dd><?= fmt_data($richiesta['ricevuta_il']) ?> (<?= e($richiesta['origine']) ?>)</dd>
-    <dt>Nome</dt><dd><?= e($richiesta['nome']) ?></dd>
-    <dt>Azienda</dt><dd><?= e($richiesta['azienda_richiedente'] ?: '—') ?></dd>
-    <dt>Email</dt><dd><?= e($richiesta['email'] ?: '—') ?></dd>
-    <dt>Telefono</dt><dd><?= e($richiesta['telefono'] ?: '—') ?></dd>
-    <dt>Località</dt><dd><?= e($richiesta['localita'] ?: '—') ?></dd>
-    <dt>Preferenza contatto</dt><dd><?= e($richiesta['preferenza_contatto'] ?: '—') ?></dd>
-    <dt>Descrizione</dt><dd><?= nl2br(e($richiesta['descrizione'])) ?></dd>
-</dl>
-
-<?php if ($auth->can('richieste', 'modifica')): ?>
-<h2>Gestione</h2>
-<form method="post" action="/app/richieste/<?= (int) $richiesta['id'] ?>" class="form">
-    <?= $csrf->field() ?>
-    <div class="grid">
-        <label>Stato <select name="stato"><?= options($stati['richiesta_stato'], $richiesta['stato']) ?></select></label>
-        <label>Incaricato
-            <select name="assegnato_a">
-                <option value="">—</option>
-                <?php foreach ($utenti as $u): ?>
-                    <option value="<?= (int) $u['id'] ?>" <?= (int) $richiesta['assegnato_a'] === (int) $u['id'] ? 'selected' : '' ?>><?= e($u['nome'] . ' ' . $u['cognome']) ?></option>
-                <?php endforeach; ?>
-            </select>
-        </label>
-    </div>
-    <div class="actions"><button class="btn" type="submit">Salva</button></div>
-</form>
-
-<?php if ($richiesta['cliente_id']): ?>
-    <p>Convertita nel cliente <a href="/app/clienti/<?= (int) $richiesta['cliente_id'] ?>">#<?= (int) $richiesta['cliente_id'] ?></a>.</p>
-<?php elseif ($auth->can('clienti', 'creazione')): ?>
-    <form method="post" action="/app/richieste/<?= (int) $richiesta['id'] ?>/converti" class="inline">
-        <?= $csrf->field() ?><button class="btn btn-secondary" type="submit">Converti in cliente</button>
-    </form>
-<?php endif; endif; ?>
+<div class="page-head"><div><a href="/app/richieste" class="text-decoration-none">← Torna alle richieste</a><p class="text-uppercase small fw-semibold text-success mt-3 mb-1">Richiesta #<?= (int)$richiesta['id'] ?></p><h1 class="h2 mb-0"><?= e(lbl($stati['richiesta_tipo'],$richiesta['tipo'])) ?></h1></div><span class="badge rounded-pill text-bg-light fs-6"><?= e(lbl($stati['richiesta_stato'],$richiesta['stato'])) ?></span></div>
+<div class="row g-4"><div class="col-lg-8"><div class="card border-0 shadow-sm"><div class="card-body p-4"><h2 class="h5">Dettagli del richiedente</h2><dl class="row mb-0 mt-3"><dt class="col-sm-4 text-secondary">Ricevuta</dt><dd class="col-sm-8"><?= e(fmt_data($richiesta['ricevuta_il'])) ?> · <?= e(ucfirst($richiesta['origine'])) ?></dd><dt class="col-sm-4 text-secondary">Nome</dt><dd class="col-sm-8"><?= e($richiesta['nome']) ?></dd><dt class="col-sm-4 text-secondary">Azienda</dt><dd class="col-sm-8"><?= e($richiesta['azienda_richiedente']?:'—') ?></dd><dt class="col-sm-4 text-secondary">Email</dt><dd class="col-sm-8"><?= $richiesta['email']?'<a href="mailto:'.e($richiesta['email']).'">'.e($richiesta['email']).'</a>':'—' ?></dd><dt class="col-sm-4 text-secondary">Telefono</dt><dd class="col-sm-8"><?= $richiesta['telefono']?'<a href="tel:'.e($richiesta['telefono']).'">'.e($richiesta['telefono']).'</a>':'—' ?></dd><dt class="col-sm-4 text-secondary">Località</dt><dd class="col-sm-8"><?= e($richiesta['localita']?:'—') ?></dd><dt class="col-sm-4 text-secondary">Preferenza</dt><dd class="col-sm-8"><?= e($richiesta['preferenza_contatto']?:'Nessuna preferenza') ?></dd><dt class="col-sm-4 text-secondary">Descrizione</dt><dd class="col-sm-8 text-break"><?= nl2br(e($richiesta['descrizione'])) ?></dd></dl></div></div></div>
+<div class="col-lg-4"><div class="card border-0 shadow-sm mb-3"><div class="card-body"><h2 class="h5">Prossimo passo</h2><?php if($richiesta['cliente_id']): ?><div class="alert alert-success mb-0">Questa richiesta è stata convertita in cliente.<p class="mb-0 mt-2"><a href="/app/clienti/<?= (int)$richiesta['cliente_id'] ?>">Apri la scheda cliente →</a></p></div><?php elseif($auth->can('clienti','creazione')): ?><p class="text-secondary">Crea un’anagrafica cliente usando i dati già ricevuti.</p><form method="post" action="/app/richieste/<?= (int)$richiesta['id'] ?>/converti"><?= $csrf->field() ?><button class="btn btn-success w-100" data-confirm="Creare un cliente con i dati di questa richiesta?">Crea cliente dalla richiesta</button></form><?php else: ?><p class="text-secondary mb-0">Puoi aggiornare lo stato o assegnare la richiesta.</p><?php endif ?></div></div>
+<?php if($auth->can('richieste','modifica')): ?><form method="post" action="/app/richieste/<?= (int)$richiesta['id'] ?>" class="card border-0 shadow-sm"><div class="card-body"><h2 class="h5">Assegnazione e stato</h2><?= $csrf->field() ?><label class="form-label mt-2">Stato<select class="form-select" name="stato"><?= options($stati['richiesta_stato'],$richiesta['stato']) ?></select></label><label class="form-label mt-2">Incaricato<select class="form-select" name="assegnato_a"><option value="">Non assegnata</option><?php foreach($utenti as $u): ?><option value="<?= (int)$u['id'] ?>" <?= (int)$richiesta['assegnato_a']===(int)$u['id']?'selected':'' ?>><?= e($u['nome'].' '.$u['cognome']) ?></option><?php endforeach ?></select></label><button class="btn btn-primary w-100 mt-2">Salva aggiornamenti</button></div></form><?php endif ?></div></div>

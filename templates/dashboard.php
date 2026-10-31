@@ -1,29 +1,13 @@
-<h1>Dashboard</h1>
-<div class="cards">
-    <?php if ($nuoveRichieste !== null): ?>
-        <a class="card" href="/app/richieste?stato=nuova"><strong><?= (int) $nuoveRichieste ?></strong><span>Nuove richieste</span></a>
-    <?php endif; ?>
-    <?php foreach ($conteggi as $stato => $n): ?>
-        <a class="card" href="/app/interventi?stato=<?= e($stato) ?>"><strong><?= (int) $n ?></strong><span><?= lbl($stati['intervento_stato'], $stato) ?></span></a>
-    <?php endforeach; ?>
+<div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4"><div><p class="text-uppercase small fw-semibold text-success mb-1">Centro operativo</p><h1 class="h2 mb-1">Buongiorno, <?= e($auth->user()['nome']??'') ?></h1><p class="text-secondary mb-0">Da qui puoi trovare le attività e le informazioni che usi ogni giorno.</p></div></div>
+
+<div class="row g-3 mb-4">
+    <?php if ($nuoveRichieste !== null): ?><div class="col-6 col-lg-3"><a class="card h-100 text-decoration-none shadow-sm border-0" href="/app/richieste?stato=nuova"><div class="card-body"><span class="text-secondary">Da gestire</span><div class="display-6 fw-semibold text-dark"><?= (int)$nuoveRichieste ?></div><span class="small text-success">Nuove richieste →</span></div></a></div><?php endif; ?>
+    <?php foreach ($conteggi as $stato=>$n): ?><div class="col-6 col-lg-3"><a class="card h-100 text-decoration-none shadow-sm border-0" href="/app/interventi?stato=<?= e($stato) ?>"><div class="card-body"><span class="text-secondary"><?= e(lbl($stati['intervento_stato'],$stato)) ?></span><div class="display-6 fw-semibold text-dark"><?= (int)$n ?></div><span class="small text-success">Apri gli interventi →</span></div></a></div><?php endforeach; ?>
 </div>
 
-<?php if ($auth->can('interventi', 'lettura')): ?>
-<h2>Prossimi interventi</h2>
-<?php if (!$prossimi): ?>
-    <p class="muted">Nessun intervento in programma.</p>
-<?php else: ?>
-<div class="table-wrap"><table>
-    <thead><tr><th>Quando</th><th>Cliente / sede</th><th>Servizio</th><th>Stato</th></tr></thead>
-    <tbody>
-    <?php foreach ($prossimi as $i): ?>
-        <tr>
-            <td><?= fmt_data($i['pianificato_il']) ?></td>
-            <td><a href="/app/interventi/<?= (int) $i['id'] ?>"><?= e($i['cliente']) ?></a><br><small><?= e($i['sede_nome']) ?></small></td>
-            <td><?= lbl($stati['servizio_tipo'], $i['tipo_servizio']) ?></td>
-            <td><span class="badge"><?= lbl($stati['intervento_stato'], $i['stato']) ?></span></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table></div>
-<?php endif; endif; ?>
+<div class="card border-0 shadow-sm"><div class="card-body border-bottom d-flex justify-content-between align-items-center"><div><h2 class="h5 mb-1">Prossimi interventi</h2><p class="text-secondary small mb-0">Attività pianificate da oggi in avanti.</p></div><?php if($auth->can('interventi','lettura')): ?><a class="btn btn-outline-primary btn-sm" href="/app/interventi">Vedi tutti</a><?php endif ?></div>
+<?php if (!$auth->can('interventi','lettura')): ?><div class="empty-state">Non hai interventi da consultare.</div><?php elseif (!$prossimi): ?><div class="empty-state">Nessun intervento in programma. Usa “Nuovo intervento” per pianificarne uno.</div><?php else: ?><div class="table-responsive"><table class="table table-hover align-middle mb-0"><thead class="table-light"><tr><th>Quando</th><th>Cliente e sede</th><th>Servizio</th><th>Stato</th><th></th></tr></thead><tbody><?php foreach($prossimi as $i): ?><tr><td class="text-nowrap"><?= e(fmt_data($i['pianificato_il'])) ?></td><td><strong><?= e($i['cliente']) ?></strong><br><small><?= e($i['sede_nome']) ?></small></td><td><?= e(lbl($stati['servizio_tipo'],$i['tipo_servizio'])) ?></td><td><span class="badge rounded-pill text-bg-light"><?= e(lbl($stati['intervento_stato'],$i['stato'])) ?></span></td><td><a class="btn btn-sm btn-outline-primary" href="/app/interventi/<?= (int)$i['id'] ?>">Apri</a></td></tr><?php endforeach ?></tbody></table></div><?php endif ?></div>
+
+<section class="mt-4"><h2 class="h5 mb-3">Accesso rapido</h2><div class="d-flex flex-wrap gap-2">
+<?php foreach([['clienti','/app/clienti','Cerca un cliente'],['richieste','/app/richieste','Gestisci richieste'],['sopralluoghi','/app/sopralluoghi','Pianifica sopralluogo'],['preventivi','/app/preventivi','Prepara preventivo'],['calendario','/app/calendario','Apri calendario']] as [$mod,$url,$label]): if($auth->can($mod,'lettura')): ?><a class="btn btn-outline-secondary" href="<?= e($url) ?>"><?= e($label) ?></a><?php endif; endforeach; ?>
+</div></section>

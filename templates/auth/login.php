@@ -1,11 +1,1 @@
-<h1>Accesso</h1>
-<form method="post" action="/app/login" class="form">
-    <?= $csrf->field() ?>
-    <label>Email
-        <input type="email" name="email" value="<?= e($email) ?>" required autofocus>
-    </label>
-    <label>Password
-        <input type="password" name="password" required>
-    </label>
-    <button type="submit" class="btn">Accedi</button>
-</form>
+<div class="card border-0 shadow-sm mx-auto" style="max-width:460px"><div class="card-body p-4 p-md-5"><p class="text-uppercase small fw-semibold text-success mb-1">Area riservata</p><h1 class="h2 mb-2">Accedi al gestionale</h1><p class="text-secondary mb-4">Inserisci le credenziali fornite dalla tua azienda.</p><form method="post" action="/app/login"><?= $csrf->field() ?><div class="mb-3"><label class="form-label" for="loginEmail">Email</label><input class="form-control form-control-lg" type="email" id="loginEmail" name="email" value="<?= e($email) ?>" autocomplete="username" required autofocus></div><div class="mb-4"><label class="form-label" for="loginPassword">Password</label><div class="input-group"><input class="form-control form-control-lg" type="password" id="loginPassword" name="password" autocomplete="current-password" required><button class="btn btn-outline-secondary" type="button" data-toggle-password="#loginPassword" aria-label="Mostra password">Mostra</button></div></div><button type="submit" class="btn btn-primary btn-lg w-100">Accedi</button></form></div></div>

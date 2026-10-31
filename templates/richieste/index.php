@@ -1,23 +1,3 @@
-<h1>Richieste</h1>
-<form method="get" class="filters">
-    <select name="stato"><?= options($stati['richiesta_stato'], $stato, true) ?></select>
-    <button class="btn btn-small" type="submit">Filtra</button>
-</form>
-<?php if (!$richieste): ?>
-    <p class="muted">Nessuna richiesta.</p>
-<?php else: ?>
-<div class="table-wrap"><table>
-    <thead><tr><th>Ricevuta</th><th>Richiedente</th><th>Tipo</th><th>Stato</th><th>Incaricato</th></tr></thead>
-    <tbody>
-    <?php foreach ($richieste as $r): ?>
-        <tr>
-            <td><a href="/app/richieste/<?= (int) $r['id'] ?>"><?= fmt_data($r['ricevuta_il']) ?></a></td>
-            <td><?= e($r['nome']) ?><br><small><?= e($r['azienda_richiedente']) ?></small></td>
-            <td><?= lbl($stati['richiesta_tipo'], $r['tipo']) ?></td>
-            <td><span class="badge"><?= lbl($stati['richiesta_stato'], $r['stato']) ?></span></td>
-            <td><?= e($r['assegnato'] ?? '—') ?></td>
-        </tr>
-    <?php endforeach; ?>
-    </tbody>
-</table></div>
-<?php endif; ?>
+<div class="page-head"><div><h1 class="h2">Richieste</h1><p class="text-secondary mb-0">Le richieste dal sito e quelle inserite dal personale.</p></div></div>
+<form method="get" class="filters"><label class="visually-hidden" for="requestSearch">Cerca richieste</label><input id="requestSearch" class="form-control" type="search" placeholder="Cerca nome, azienda o località" data-live-filter="#requestRows"><label class="visually-hidden" for="requestStatus">Stato richiesta</label><select class="form-select" id="requestStatus" name="stato"><?= options($stati['richiesta_stato'],$stato,true) ?></select><button class="btn btn-primary">Applica filtri</button><?php if($stato): ?><a class="btn btn-outline-secondary" href="/app/richieste">Azzera</a><?php endif ?></form>
+<?php if(!$richieste): ?><div class="card border-0 shadow-sm"><div class="empty-state"><strong>Nessuna richiesta in questo elenco</strong><p class="mb-0 mt-1">Prova un altro stato o azzera il filtro.</p></div></div><?php else: ?><div class="table-wrap"><table class="table table-hover align-middle"><thead><tr><th>Ricevuta</th><th>Richiedente</th><th>Richiesta</th><th>Stato</th><th>Incaricato</th><th></th></tr></thead><tbody id="requestRows"><?php foreach($richieste as $r): ?><tr><td class="text-nowrap"><?= e(fmt_data($r['ricevuta_il'])) ?></td><td><strong><?= e($r['nome']) ?></strong><br><small><?= e($r['azienda_richiedente']?:$r['email']) ?></small></td><td><?= e(lbl($stati['richiesta_tipo'],$r['tipo'])) ?></td><td><span class="badge rounded-pill text-bg-light"><?= e(lbl($stati['richiesta_stato'],$r['stato'])) ?></span></td><td><?= e($r['assegnato']??'Da assegnare') ?></td><td class="text-end"><a class="btn btn-sm btn-outline-primary" href="/app/richieste/<?= (int)$r['id'] ?>">Apri</a></td></tr><?php endforeach ?></tbody></table></div><?php endif ?>

@@ -1,57 +1,11 @@
-<h1><?= $id ? 'Modifica intervento' : 'Nuovo intervento' ?></h1>
-<?php if (!$sedi): ?>
-    <p class="flash flash-error">Per creare un intervento serve almeno una sede: aggiungila dalla scheda cliente.</p>
-<?php endif; ?>
-<form method="post" action="<?= $id ? '/app/interventi/' . (int) $id : '/app/interventi' ?>" class="form">
-    <?= $csrf->field() ?>
-    <label>Cliente / sede *
-        <select name="sede_id" required>
-            <option value="">— seleziona —</option>
-            <?php $corrente = null; foreach ($sedi as $s):
-                if ($s['cliente'] !== $corrente) {
-                    if ($corrente !== null) echo '</optgroup>';
-                    echo '<optgroup label="' . e($s['cliente']) . '">';
-                    $corrente = $s['cliente'];
-                } ?>
-                <option value="<?= (int) $s['id'] ?>" <?= (string) ($intervento['sede_id'] ?? '') === (string) $s['id'] ? 'selected' : '' ?>><?= e($s['nome']) ?></option>
-            <?php endforeach; if ($corrente !== null) echo '</optgroup>'; ?>
-        </select>
-        <?= field_error($errors, 'sede_id') ?>
-    </label>
-    <div class="grid">
-        <label>Tipologia di servizio *
-            <select name="tipo_servizio"><?= options($stati['servizio_tipo'], $intervento['tipo_servizio'] ?? null) ?></select>
-            <?= field_error($errors, 'tipo_servizio') ?>
-        </label>
-        <label>Infestante <input name="infestante" value="<?= v($intervento, 'infestante') ?>"><?= field_error($errors, 'infestante') ?></label>
-        <label>Stato *
-            <select name="stato"><?= options($stati['intervento_stato'], $intervento['stato'] ?? null) ?></select>
-            <?= field_error($errors, 'stato') ?>
-        </label>
-    </div>
-    <div class="grid">
-        <label>Data e ora pianificate
-            <input type="datetime-local" name="pianificato_il" value="<?= v($intervento, 'pianificato_il') ?>">
-            <?= field_error($errors, 'pianificato_il') ?>
-        </label>
-        <label>Durata stimata (minuti)
-            <input name="durata_stimata_min" inputmode="numeric" value="<?= v($intervento, 'durata_stimata_min') ?>">
-            <?= field_error($errors, 'durata_stimata_min') ?>
-        </label>
-    </div>
-    <label>Descrizione <textarea name="descrizione" rows="3"><?= v($intervento, 'descrizione') ?></textarea></label>
-    <label>Istruzioni operative <textarea name="istruzioni" rows="3"><?= v($intervento, 'istruzioni') ?></textarea></label>
-    <fieldset>
-        <legend>Operatori assegnati</legend>
-        <?php foreach ($utenti as $u): ?>
-            <label class="check">
-                <input type="checkbox" name="operatori[]" value="<?= (int) $u['id'] ?>" <?= in_array((int) $u['id'], array_map('intval', $assegnati), true) ? 'checked' : '' ?>>
-                <?= e($u['nome'] . ' ' . $u['cognome']) ?> <small>(<?= e($u['ruolo']) ?>)</small>
-            </label>
-        <?php endforeach; ?>
-    </fieldset>
-    <div class="actions">
-        <button class="btn" type="submit">Salva</button>
-        <a class="btn btn-secondary" href="<?= $id ? '/app/interventi/' . (int) $id : '/app/interventi' ?>">Annulla</a>
-    </div>
-</form>
+<div class="mb-4"><a href="/app/interventi" class="text-decoration-none">← Torna agli interventi</a><h1 class="h2 mt-2"><?= $id?'Modifica intervento':'Crea un intervento' ?></h1><p class="text-secondary mb-0">Compila i dati essenziali, poi assegna il lavoro agli operatori.</p></div>
+<?php if(!$sedi): ?><div class="alert alert-info"><strong>Prima aggiungi una sede.</strong> Per pianificare un intervento, il cliente deve avere almeno una sede registrata. <a href="/app/clienti">Vai ai clienti</a>.</div><?php endif ?>
+<form method="post" action="<?= $id?'/app/interventi/'.(int)$id:'/app/interventi' ?>" class="form" data-intervention-form novalidate><?= $csrf->field() ?>
+<section class="mb-4"><h2 class="h5">Dove e quale servizio?</h2><p class="help-text">Scegli la sede del cliente e il tipo di attività da svolgere.</p><div class="grid"><label>Cliente e sede <span class="required-mark">*</span><select class="form-select" name="sede_id" required><option value="">Seleziona una sede…</option><?php $corrente=null;foreach($sedi as $s):if($s['cliente']!==$corrente){if($corrente!==null)echo '</optgroup>';echo '<optgroup label="'.e($s['cliente']).'">';$corrente=$s['cliente'];}?><option value="<?= (int)$s['id'] ?>" <?= (string)($intervento['sede_id']??'')===(string)$s['id']?'selected':'' ?>><?= e($s['nome']) ?><?= $s['citta']?' · '.e($s['citta']):'' ?></option><?php endforeach;if($corrente!==null)echo '</optgroup>';?></select><?= field_error($errors,'sede_id') ?></label>
+<label>Tipo di servizio <span class="required-mark">*</span><select class="form-select" name="tipo_servizio" required><?= options($stati['servizio_tipo'],$intervento['tipo_servizio']??null) ?></select><?= field_error($errors,'tipo_servizio') ?></label>
+<label>Infestante (se già noto)<input class="form-control" name="infestante" value="<?= v($intervento,'infestante') ?>" placeholder="Es. roditori, blatte"></label>
+<label>Stato iniziale<select class="form-select" name="stato" required><?= options($stati['intervento_stato'],$intervento['stato']??'da_pianificare') ?></select></label></div></section>
+<section class="mb-4"><h2 class="h5">Quando si svolge?</h2><p class="help-text">La data inserita verrà mostrata anche nel calendario.</p><div class="grid"><label>Data e ora<input class="form-control" type="datetime-local" name="pianificato_il" value="<?= v($intervento,'pianificato_il') ?>"><?= field_error($errors,'pianificato_il') ?></label><label>Durata prevista<input class="form-control" type="number" min="1" step="1" name="durata_stimata_min" value="<?= v($intervento,'durata_stimata_min') ?>" placeholder="Minuti"></label></div></section>
+<section class="mb-4"><h2 class="h5">Istruzioni per il lavoro</h2><div class="grid"><label>Descrizione<textarea class="form-control" name="descrizione" rows="3" placeholder="Descrivi brevemente il problema o il lavoro richiesto."><?= v($intervento,'descrizione') ?></textarea></label><label>Istruzioni operative<textarea class="form-control" name="istruzioni" rows="3" placeholder="Informazioni utili per chi eseguirà il lavoro."><?= v($intervento,'istruzioni') ?></textarea></label></div></section>
+<fieldset><legend>Chi eseguirà l’intervento?</legend><p class="help-text">Puoi assegnare più operatori. Riceveranno una notifica quando aggiunti.</p><?php foreach($utenti as $u): ?><label class="check"><input class="form-check-input" type="checkbox" name="operatori[]" value="<?= (int)$u['id'] ?>" <?= in_array((int)$u['id'],array_map('intval',$assegnati),true)?'checked':'' ?>> <?= e($u['nome'].' '.$u['cognome']) ?> <small>(<?= e($u['ruolo']) ?>)</small></label><?php endforeach ?><div class="help-text" data-schedule-hint aria-live="polite"></div></fieldset>
+<div class="actions mt-4"><button class="btn btn-primary btn-lg" <?= !$sedi?'disabled':'' ?>>Salva intervento</button><a class="btn btn-outline-secondary" href="<?= $id?'/app/interventi/'.(int)$id:'/app/interventi' ?>">Annulla</a></div></form>
