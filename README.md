@@ -1,6 +1,6 @@
 # Pest Control Manager — Fase 1 (MVP)
 
-PHP 8.2+ (OOP, senza framework) · MariaDB · interfaccia server-side con Bootstrap 5.
+PHP 8.2+ (OOP, senza framework) · MariaDB · interfaccia client-side con Bootstrap 5 e JS.
 
 ## Avvio
     docker compose up --build
